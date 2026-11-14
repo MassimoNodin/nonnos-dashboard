@@ -1,1 +1,11 @@
-{"name":"nonnos-dashboard","private":true,"type":"module","scripts":{"fixtures":"node src/fixtures.js","test":"node --test"},"engines":{"node":">=20"}}
+{
+  "name": "nonnos-dashboard",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "fixtures": "node src/fixtures.js",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=20" }
+}
