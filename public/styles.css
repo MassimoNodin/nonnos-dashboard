@@ -1,125 +1,129 @@
+/* Built for a portrait TV (1080 x 1920). Everything scales with the screen,
+   and the page is laid out to fit without scrolling. */
+
 :root {
-  --bg: #f4f1ea;
-  --card: #ffffff;
-  --ink: #141414;
-  --muted: #4a4a4a;
-  --line: #d9d4c7;
-  --today: #b3261e;
-  --win: #1d6b2f;
-  --loss: #a1261d;
-  --draw: #5a5a5a;
-  font-size: clamp(17px, 0.9vw + 10px, 22px);
+  --page: #15181d;
+  --page-ink: #f3f3f3;
+  --page-muted: #a9afb8;
+  --highlight: #ffd23f;
+  font-size: max(14px, min(2.6vw, 1.45vh));
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #121212;
-    --card: #1e1e1e;
-    --ink: #f5f5f5;
-    --muted: #c4c4c4;
-    --line: #3a3a3a;
-    --today: #ff8a80;
-    --win: #7bd88f;
-    --loss: #ff8a80;
-    --draw: #c4c4c4;
-  }
+/* ---- Team themes ---- */
+.theme-juventus {
+  --bg: #ffffff;
+  --ink: #0a0a0a;
+  --edge: #ffffff;
+  --band: repeating-linear-gradient(90deg, #0a0a0a 0 0.4rem, #ffffff 0.4rem 0.8rem);
+}
+.theme-collingwood {
+  --bg: #000000;
+  --ink: #ffffff;
+  --edge: #5c5c5c;
+  --band: repeating-linear-gradient(90deg, #ffffff 0 0.4rem, #000000 0.4rem 0.8rem);
+}
+.theme-melbourne-victory {
+  --bg: #002b5c;
+  --ink: #ffffff;
+  --edge: #3b5f8c;
+  --band: linear-gradient(90deg, #ffffff 0 45%, #a7b6c8 45% 100%);
 }
 
 * { box-sizing: border-box; }
+p, h1, h2, ol { margin: 0; padding: 0; }
 
+html, body { height: 100%; }
 body {
   margin: 0;
-  padding: 1.25rem;
-  background: var(--bg);
-  color: var(--ink);
-  font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
-  line-height: 1.35;
-}
-
-p, h1, h2, h3 { margin: 0; }
-
-.top {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 0.5rem 2rem;
-  margin-bottom: 1.25rem;
-}
-.today { font-size: 1.4rem; font-weight: 600; }
-.clock { font-size: 3rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; }
-.top h1 { font-size: 1.2rem; font-weight: 600; color: var(--muted); }
-
-.teams {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-  gap: 1.25rem;
-}
-
-.card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 0.75rem;
-  padding: 1.25rem 1.4rem 1.25rem 2.15rem;
-  position: relative;
-  overflow: hidden;
+  padding: 1.4rem 1.4rem 1rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-}
-.card::before {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 0.75rem;
-  background: var(--team-stripe, var(--muted));
-  border-right: 1px solid var(--line);
-}
-.card.is-today { border-color: var(--today); box-shadow: 0 0 0 3px var(--today); }
-
-.card-head h2 { font-size: 1.6rem; }
-.card-head p { color: var(--muted); font-size: 0.95rem; }
-
-.label {
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--muted);
+  overflow: hidden;
+  background: var(--page);
+  color: var(--page-ink);
+  font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  line-height: 1.2;
 }
 
-.next .when-day { font-size: 1.5rem; font-weight: 700; }
-.next .when-day.soon { color: var(--today); }
-.next .until { color: var(--muted); font-weight: 600; }
-.next .when-time { font-size: 2.6rem; font-weight: 800; line-height: 1.1; font-variant-numeric: tabular-nums; }
-.next .when-time.tbc { font-size: 1.3rem; font-weight: 600; color: var(--muted); }
-.next .opponent { font-size: 1.4rem; font-weight: 600; margin-top: 0.4rem; }
-.next .where { color: var(--muted); }
+/* ---- Clock ---- */
+.top { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.clock { font-size: 4.2rem; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
+.today { font-size: 1.5rem; font-weight: 600; color: var(--page-muted); }
+
+.games { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+.loading { font-size: 1.6rem; }
+
+/* ---- Shared themed pieces ---- */
+.hero, .row, .later-line {
+  position: relative;
+  background: var(--bg);
+  color: var(--ink);
+  border: 2px solid var(--edge);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+.is-soon { outline: 0.3rem solid var(--highlight); outline-offset: 0.15rem; }
+
+.team-tag { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; }
+.team-name { font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; }
+.competition { opacity: 0.7; font-weight: 600; }
+
 .badge {
   display: inline-block;
-  margin-left: 0.4rem;
-  padding: 0.05rem 0.5rem;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  font-size: 0.8rem;
-  font-weight: 600;
-  vertical-align: middle;
+  padding: 0.05em 0.45em;
+  border: 2px solid currentColor;
+  border-radius: 0.4em;
+  font-size: 0.6em;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  vertical-align: 0.25em;
 }
-.live { color: var(--today); font-size: 1.8rem; font-weight: 800; }
 
-.last { border-top: 1px solid var(--line); padding-top: 0.9rem; }
-.last .score { font-size: 1.15rem; font-weight: 600; }
-.outcome { font-weight: 800; }
-.outcome.win { color: var(--win); }
-.outcome.loss { color: var(--loss); }
-.outcome.draw { color: var(--draw); }
+/* ---- Next game ---- */
+.hero { padding: 2rem 1.8rem 1.4rem; display: grid; gap: 0.3rem; }
+.hero::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 0.9rem; background: var(--band); }
+.hero .eyebrow { font-size: 1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; opacity: 0.7; }
+.hero .team-name { font-size: 1.9rem; }
+.hero .competition { font-size: 1.1rem; }
+.hero-day { font-size: 1.8rem; font-weight: 700; margin-top: 0.5rem; }
+.hero-time { font-size: 4.6rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.hero-time.tbc { font-size: 2rem; opacity: 0.8; }
+.hero-match { font-size: 2.2rem; font-weight: 800; margin-top: 0.4rem; }
+.hero-venue { font-size: 1.4rem; font-weight: 600; opacity: 0.8; }
+.hero-until { font-size: 1.2rem; font-weight: 600; opacity: 0.7; margin-top: 0.3rem; }
+.hero.is-soon .eyebrow { opacity: 1; }
 
-.later { border-top: 1px solid var(--line); padding-top: 0.9rem; }
-.later ul { list-style: none; margin: 0.3rem 0 0; padding: 0; }
-.later li { padding: 0.25rem 0; display: grid; }
-.later li span:first-child { font-weight: 600; }
-.later li span:last-child { color: var(--muted); }
+/* ---- Coming up list ---- */
+.list-title { font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: var(--page-muted); margin-top: 0.4rem; }
+/* The padding leaves room for the highlight outline, which overflow would otherwise clip. */
+.list { list-style: none; flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 0.6rem; padding: 0.5rem; margin: -0.5rem; }
+.row {
+  flex: 1 0 auto;
+  max-height: 9rem;
+  display: grid;
+  grid-template-columns: 9.5rem 1fr;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.7rem 1.2rem 0.7rem 2.6rem;
+}
+.row::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 1.6rem; background: var(--band); }
+.row-day { font-size: 1.15rem; font-weight: 700; }
+.row-time { font-size: 1.8rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.row-time.tbc { font-size: 1.15rem; opacity: 0.75; }
+.row-what { min-width: 0; }
+.row .team-name { font-size: 1rem; }
+.row .competition { font-size: 0.85rem; }
+.row-match { font-size: 1.5rem; font-weight: 800; }
+.row-venue { font-size: 1.05rem; font-weight: 600; opacity: 0.8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-.foot { margin-top: 1.5rem; color: var(--muted); font-size: 0.85rem; display: grid; gap: 0.3rem; }
-.foot .warn { color: var(--today); font-weight: 600; }
-.loading { font-size: 1.4rem; }
+/* ---- Teams not in the list ---- */
+.later { display: grid; gap: 0.5rem; }
+.later:empty { display: none; }
+.later-line { padding: 0.6rem 1rem 0.6rem 2rem; font-size: 1.05rem; }
+.later-line::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 1.2rem; background: var(--band); }
+
+/* ---- Footer ---- */
+.foot { color: var(--page-muted); font-size: 0.8rem; display: grid; gap: 0.2rem; }
+.foot .warn { color: var(--highlight); font-weight: 700; }

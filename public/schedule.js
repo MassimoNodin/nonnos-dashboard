@@ -11,30 +11,18 @@ export const TEAM_ORDER = ['Juventus', 'Collingwood', 'Melbourne Victory'];
 const start = fixture => Date.parse(fixture.startTimeUtc);
 const end = fixture => start(fixture) + (GAME_LENGTH_MS[fixture.competition] ?? GAME_LENGTH_MS.AFL);
 
-/** Splits one team's fixtures into the last finished game, a live game, and upcoming games. */
-export function teamSchedule(fixtures, team, now = Date.now()) {
-  const games = fixtures
-    .filter(fixture => fixture.team === team && fixture.startTimeUtc)
-    .sort((a, b) => start(a) - start(b));
-  const finished = games.filter(game => end(game) <= now);
-  return {
-    last: finished.at(-1) ?? null,
-    live: games.find(game => start(game) <= now && now < end(game)) ?? null,
-    upcoming: games.filter(game => start(game) > now),
-  };
+export const isLive = (fixture, now = Date.now()) => start(fixture) <= now && now < end(fixture);
+
+/** Games for every team that have not finished yet, soonest first (live games included). */
+export function upcomingGames(fixtures, now = Date.now()) {
+  return fixtures
+    .filter(fixture => fixture.startTimeUtc && TEAM_ORDER.includes(fixture.team) && end(fixture) > now)
+    .sort((a, b) => start(a) - start(b) || TEAM_ORDER.indexOf(a.team) - TEAM_ORDER.indexOf(b.team));
 }
 
 export function opponentOf(fixture) {
   const home = fixture.homeTeam === fixture.team;
   return { home, opponent: home ? fixture.awayTeam : fixture.homeTeam };
-}
-
-export function outcomeOf(fixture) {
-  if (fixture.homeScore === null || fixture.awayScore === null) return null;
-  const { home } = opponentOf(fixture);
-  const ours = home ? fixture.homeScore : fixture.awayScore;
-  const theirs = home ? fixture.awayScore : fixture.homeScore;
-  return { ours, theirs, result: ours > theirs ? 'win' : ours < theirs ? 'loss' : 'draw' };
 }
 
 /** Whole calendar days between two instants in the given time zone. */

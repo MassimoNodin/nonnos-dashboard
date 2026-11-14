@@ -1,6 +1,8 @@
 # Nonno's dashboard
 
-A large-print dashboard showing when Juventus (Serie A), Collingwood (AFL), and Melbourne Victory (A-League Men) play next, what happened in their last game, and the games after that.
+A large-print dashboard, built for a TV turned on its side (portrait, 1080 x 1920), showing the upcoming games for Juventus (Serie A), Collingwood (AFL), and Melbourne Victory (A-League Men).
+
+The soonest game fills a big panel at the top. Below it, the following games for all three teams are listed in kickoff order, as many as fit on the screen. Each game is coloured in its team's colours and says whether it is a home or away game, who the opponent is, and the stadium. Games today, tomorrow, or in progress get a yellow outline. A team with no game in the list (for example, Collingwood in the AFL off-season) gets one line at the bottom with its next game.
 
 Fixtures come from the free [Fixture Download](https://fixturedownload.com) JSON feeds. No account, API key, or other credentials are required.
 
@@ -17,6 +19,10 @@ Open http://localhost:3000. The server fetches fresh fixtures when it starts (if
 To open the dashboard from another device on the same network, start it with `HOST=0.0.0.0` (PowerShell: `$env:HOST='0.0.0.0'; npm start`) and visit `http://<this-computer's-IP>:3000`. Set `PORT` to use a different port.
 
 To refresh the data without starting the server, run `npm run fixtures`.
+
+## Showing it on a portrait TV
+
+Rotate the display to portrait in the computer's display settings (Windows: Settings > System > Display > Display orientation > Portrait). Then open the page full-screen, for example with `msedge --kiosk http://localhost:3000 --edge-kiosk-type=fullscreen`. The layout scales with the screen size and never needs scrolling. It also works in a normal browser window.
 
 ## Data notes
 

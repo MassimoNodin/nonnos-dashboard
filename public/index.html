@@ -3,25 +3,27 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nonno's Dashboard</title>
+  <title>Nonno's Games</title>
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
   <header class="top">
-    <div>
-      <p class="today" id="today"></p>
-      <p class="clock" id="clock"></p>
-    </div>
-    <h1>Nonno's Games</h1>
+    <p class="clock" id="clock"></p>
+    <p class="today" id="today"></p>
   </header>
 
-  <main id="teams" class="teams" aria-live="polite">
-    <p class="loading">Loading the games…</p>
+  <main class="games" aria-live="polite">
+    <section id="hero" class="hero-slot">
+      <p class="loading">Loading the games…</p>
+    </section>
+    <h2 class="list-title" id="list-title" hidden>Coming up</h2>
+    <ol id="list" class="list"></ol>
+    <section id="later" class="later"></section>
   </main>
 
   <footer class="foot">
     <p id="status"></p>
-    <p>Times are shown in this device's time zone (<span id="zone"></span>). Times come from Fixture Download and can change, so check closer to the day.</p>
+    <p>Times are for <span id="zone"></span> and can change, so check closer to the day.</p>
   </footer>
 
   <script type="module" src="/app.js"></script>

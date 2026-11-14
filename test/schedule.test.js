@@ -1,25 +1,34 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { daysBetween, opponentOf, outcomeOf, teamSchedule } from '../public/schedule.js';
+import { daysBetween, isLive, opponentOf, upcomingGames } from '../public/schedule.js';
 
-const game = (startTimeUtc, extra = {}) => ({ team: 'Juventus', competition: 'Serie A', homeTeam: 'Juventus', awayTeam: 'Como', startTimeUtc, homeScore: null, awayScore: null, ...extra });
+const game = (team, competition, startTimeUtc, extra = {}) => ({ team, competition, homeTeam: team, awayTeam: 'Other', startTimeUtc, ...extra });
 
-test('splits a team schedule into last, live, and upcoming games', () => {
-  const fixtures = [game('2026-11-08T19:45:00.000Z', { homeScore: 2, awayScore: 2 }), game('2026-11-14T19:00:00.000Z'), game('2026-11-22T11:30:00.000Z'), { ...game('2026-11-15T00:00:00.000Z'), team: 'Collingwood' }];
+test('lists unfinished games for all teams in kickoff order, including live ones', () => {
+  const fixtures = [
+    game('Melbourne Victory', 'A-League Men', '2026-11-21T04:00:00.000Z'),
+    game('Juventus', 'Serie A', '2026-11-08T19:45:00.000Z'), // finished
+    game('Collingwood', 'AFL', '2026-11-14T18:00:00.000Z'), // started 2h ago, AFL still going
+    game('Juventus', 'Serie A', '2026-11-22T11:30:00.000Z'),
+    game('Juventus', 'Serie A', null),
+    game('Someone Else', 'Serie A', '2026-11-16T00:00:00.000Z'),
+  ];
   const now = Date.parse('2026-11-14T20:00:00Z');
-  const { last, live, upcoming } = teamSchedule(fixtures, 'Juventus', now);
-  assert.equal(last.startTimeUtc, '2026-11-08T19:45:00.000Z');
-  assert.equal(live.startTimeUtc, '2026-11-14T19:00:00.000Z');
-  assert.deepEqual(upcoming.map(item => item.startTimeUtc), ['2026-11-22T11:30:00.000Z']);
-  assert.equal(teamSchedule(fixtures, 'Juventus', Date.parse('2026-11-14T21:30:00Z')).live, null);
+  const games = upcomingGames(fixtures, now);
+  assert.deepEqual(games.map(item => item.startTimeUtc), ['2026-11-14T18:00:00.000Z', '2026-11-21T04:00:00.000Z', '2026-11-22T11:30:00.000Z']);
+  assert.equal(isLive(games[0], now), true);
+  assert.equal(isLive(games[1], now), false);
 });
 
-test('reports results from the team point of view', () => {
-  const away = game('2026-11-08T19:45:00.000Z', { homeTeam: 'Fiorentina', awayTeam: 'Juventus', homeScore: 0, awayScore: 3 });
-  assert.deepEqual(opponentOf(away), { home: false, opponent: 'Fiorentina' });
-  assert.deepEqual(outcomeOf(away), { ours: 3, theirs: 0, result: 'win' });
-  assert.equal(outcomeOf(game('2026-11-08T19:45:00.000Z', { homeScore: 0, awayScore: 0 })).result, 'draw');
-  assert.equal(outcomeOf(game('2026-11-08T19:45:00.000Z')), null);
+test('a soccer game drops off the list once it has had time to finish', () => {
+  const fixtures = [game('Juventus', 'Serie A', '2026-11-14T18:00:00.000Z')];
+  assert.equal(upcomingGames(fixtures, Date.parse('2026-11-14T20:00:00Z')).length, 1);
+  assert.equal(upcomingGames(fixtures, Date.parse('2026-11-14T20:30:00Z')).length, 0);
+});
+
+test('describes home and away games from the team point of view', () => {
+  assert.deepEqual(opponentOf(game('Juventus', 'Serie A', null, { homeTeam: 'Como', awayTeam: 'Juventus' })), { home: false, opponent: 'Como' });
+  assert.deepEqual(opponentOf(game('Juventus', 'Serie A', null)), { home: true, opponent: 'Other' });
 });
 
 test('counts calendar days in the viewer time zone', () => {
