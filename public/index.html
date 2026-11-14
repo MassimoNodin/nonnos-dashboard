@@ -9,14 +9,17 @@
 <body>
   <header class="top">
     <p class="clock" id="clock"></p>
-    <p class="today" id="today"></p>
+    <div class="top-right">
+      <p class="greeting" id="greeting"></p>
+      <p class="today" id="today"></p>
+    </div>
   </header>
 
   <main class="games" aria-live="polite">
     <section id="hero" class="hero-slot">
       <p class="loading">Loading the games…</p>
     </section>
-    <h2 class="list-title" id="list-title" hidden>Coming up</h2>
+    <h2 class="section-title" id="list-title" hidden>Coming up</h2>
     <ol id="list" class="list"></ol>
     <section id="later" class="later"></section>
   </main>

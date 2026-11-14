@@ -57,3 +57,18 @@ test('a refresh while offline does not wipe the saved file', async () => {
   assert.deepEqual(written.fixtures.map(fixture => fixture.id), ['x']);
   assert.equal(written.errors.length, 9);
 });
+
+test('downloads missing logos, keeps existing ones, and rejects non-SVG responses', async () => {
+  const { ensureLogos, LOGO_SOURCES } = await import('../src/logos.js');
+  const dir = await mkdtemp(join(tmpdir(), 'nonno-logos-'));
+  await writeFile(join(dir, 'juventus.svg'), '<svg>kept</svg>');
+  const requested = [];
+  const { failed } = await ensureLogos({ dir, fetchImpl: async url => {
+    requested.push(url);
+    return { ok: true, text: async () => (url === LOGO_SOURCES.collingwood ? '<svg>pies</svg>' : '<html>error page</html>') };
+  } });
+  assert.equal(requested.length, 2);
+  assert.equal(await readFile(join(dir, 'juventus.svg'), 'utf8'), '<svg>kept</svg>');
+  assert.equal(await readFile(join(dir, 'collingwood.svg'), 'utf8'), '<svg>pies</svg>');
+  assert.deepEqual(failed, [{ slug: 'melbourne-victory', message: 'Not an SVG file' }]);
+});
