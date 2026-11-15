@@ -9,25 +9,18 @@
 <body>
   <header class="top">
     <p class="clock" id="clock"></p>
-    <div class="top-right">
-      <p class="greeting" id="greeting"></p>
-      <p class="today" id="today"></p>
-    </div>
+    <p class="today" id="today"></p>
   </header>
 
   <main class="games" aria-live="polite">
     <section id="hero" class="hero-slot">
-      <p class="loading">Loading the games…</p>
+      <p class="loading">Loading…</p>
     </section>
-    <h2 class="section-title" id="list-title" hidden>Coming up</h2>
     <ol id="list" class="list"></ol>
     <section id="later" class="later"></section>
   </main>
 
-  <footer class="foot">
-    <p id="status"></p>
-    <p>Times are for <span id="zone"></span> and can change, so check closer to the day.</p>
-  </footer>
+  <footer class="foot" id="status" hidden></footer>
 
   <script type="module" src="/app.js"></script>
 </body>

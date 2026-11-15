@@ -92,6 +92,7 @@ export function normalizeEspnEvent(event, team) {
     feed: `espn-${team.espnId}`,
     team: team.name,
     competition: competitionName(event.league?.name ?? event.league?.abbreviation),
+    league: event.league?.slug ?? null, // ESPN league, used to look up live scores
     season: event.season?.year ?? null,
     round: null,
     homeTeam: home?.team?.displayName ?? null,

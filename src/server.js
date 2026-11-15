@@ -4,12 +4,13 @@ import { dirname, extname, join, normalize, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { readSavedFixtures, refreshFixtures } from './fixtures.js';
 import { LOGO_DIR, ensureLogos } from './logos.js';
+import { createLiveScores } from './live.js';
 
 const PUBLIC_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'public');
 const REFRESH_EVERY_MS = 6 * 60 * 60 * 1000;
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8' };
 
-export function createApp({ getFixtures, logoDir = LOGO_DIR }) {
+export function createApp({ getFixtures, getLiveScores = async () => ({}), logoDir = LOGO_DIR }) {
   return createServer(async (request, response) => {
     try {
       const { pathname } = new URL(request.url, 'http://localhost');
@@ -19,6 +20,7 @@ export function createApp({ getFixtures, logoDir = LOGO_DIR }) {
         if (!data) return send(response, 503, 'Fixtures have not been collected yet');
         return send(response, 200, JSON.stringify(data), 'application/json; charset=utf-8');
       }
+      if (pathname === '/api/live') return send(response, 200, JSON.stringify(await getLiveScores()), 'application/json; charset=utf-8');
       const logo = pathname.match(/^\/logos\/([a-z-]+\.svg)$/);
       if (logo) return send(response, 200, await readFile(join(logoDir, logo[1])), SVG_TYPE, SVG_HEADERS);
       const file = normalize(join(PUBLIC_DIR, pathname === '/' ? 'index.html' : pathname));
@@ -61,7 +63,8 @@ async function main() {
 
   const port = Number(process.env.PORT) || 3000;
   const host = process.env.HOST || 'localhost';
-  createApp({ getFixtures: () => readSavedFixtures() }).listen(port, host, () => {
+  const getFixtures = () => readSavedFixtures();
+  createApp({ getFixtures, getLiveScores: createLiveScores({ getFixtures }) }).listen(port, host, () => {
     console.log(`Nonno's dashboard: http://${host === '0.0.0.0' ? 'localhost' : host}:${port}`);
   });
 }

@@ -2,7 +2,7 @@
 
 A large-print dashboard, built for a TV turned on its side (portrait, 1080 x 1920), showing the upcoming games for Juventus (Serie A), the Italy men's national team (all competitions), Collingwood (AFL), and Melbourne Victory (A-League Men).
 
-The soonest game fills a big panel at the top. Below it, the following games for all three teams are listed in kickoff order, as many as fit on the screen, each with a calendar-style date tile. Each game shows the team's crest on its own team-coloured panel and says whether it is a home or away game, who the opponent is, and the stadium. Games today or tomorrow get a yellow outline, and games in progress a red one marked LIVE. A team with no game in the list (for example, Collingwood in the AFL off-season) gets one line at the bottom with its next game.
+The screen keeps the words to a minimum: for each game it shows the team (with its crest and colours), who they play, and the day and time. The soonest game fills a big panel at the top, and the following games for all teams are listed below it in kickoff order, as many as fit. Games today or tomorrow get a yellow outline. While a game is on, it gets a red outline and its kickoff time is replaced by the live score. A team with no game in the list (for example, Collingwood in the AFL off-season) gets one line at the bottom with its next game.
 
 Club fixtures come from the free [Fixture Download](https://fixturedownload.com) JSON feeds. Italy's games come from ESPN's public team schedule (`site.api.espn.com`), which covers qualifiers, the Nations League, friendlies, and tournaments in one feed. That ESPN endpoint is free and needs no key, but it is unofficial and undocumented, so it could change without notice. If it breaks, the dashboard keeps showing the last saved Italy games and says some teams could not be updated. No account, API key, or other credentials are required.
 
@@ -19,6 +19,10 @@ Open http://localhost:3000. The server fetches fresh fixtures when it starts (if
 To open the dashboard from another device on the same network, start it with `HOST=0.0.0.0` (PowerShell: `$env:HOST='0.0.0.0'; npm start`) and visit `http://<this-computer's-IP>:3000`. Set `PORT` to use a different port.
 
 To refresh the data without starting the server, run `npm run fixtures`.
+
+## Live scores
+
+From 15 minutes before kickoff until 4 hours after, the server looks up the game on ESPN's public scoreboard (free, no key) at most every 30 seconds, and the page shows the score and match clock. ESPN's status also decides when a game is over, so extra time or a long AFL game stays on screen. Like the Italy schedule, this ESPN endpoint is unofficial; if it fails, the page simply says "On now" without a score.
 
 ## Showing it on a portrait TV
 

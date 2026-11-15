@@ -53,10 +53,10 @@ html, body { height: 100%; }
 
 body {
   margin: 0;
-  padding: 1.6rem 1.5rem 1.1rem;
+  padding: 1.6rem 1.5rem 1.3rem;
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: 1.2rem;
   overflow: hidden;
   color: var(--ink);
   font-family: var(--text);
@@ -79,12 +79,10 @@ body {
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
-.top-right { text-align: right; padding-bottom: 0.25rem; }
-.greeting { font-size: 1.15rem; font-weight: 600; color: var(--today); letter-spacing: 0.01em; }
-.today { font-family: var(--display); font-size: 1.75rem; font-weight: 600; color: var(--ink-2); margin-top: 0.2rem; }
+.today { font-family: var(--display); font-size: 1.9rem; font-weight: 600; color: var(--ink-2); text-align: right; padding-bottom: 0.2rem; }
 
-.games { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 0.8rem; }
-.loading { font-size: 1.6rem; color: var(--ink-2); padding: 2rem 0.3rem; }
+.games { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 1rem; }
+.loading { font-size: 1.8rem; color: var(--ink-2); padding: 2rem 0.3rem; }
 
 /* ---------- Shared pieces ---------- */
 .hero, .row, .later-line {
@@ -106,41 +104,22 @@ body {
 }
 .crest img { width: 70%; height: 70%; object-fit: contain; }
 .crest-initials { font-family: var(--display); font-weight: 700; color: #111; font-size: 0.32em; }
-.crest-lg { width: 6.4rem; height: 6.4rem; font-size: 6.4rem; }
-.crest-md { width: 3.9rem; height: 3.9rem; font-size: 3.9rem; }
-.crest-sm { width: 2.5rem; height: 2.5rem; font-size: 2.5rem; box-shadow: 0 0 0 0.12rem var(--accent); }
+.crest-lg { width: 7rem; height: 7rem; font-size: 7rem; }
+.crest-md { width: 4.2rem; height: 4.2rem; font-size: 4.2rem; }
+.crest-sm { width: 2.7rem; height: 2.7rem; font-size: 2.7rem; box-shadow: 0 0 0 0.12rem var(--accent); }
 
 .vs { font-weight: 500; color: var(--ink-3); margin-right: 0.05em; }
 
-.venue { display: flex; align-items: center; gap: 0.35em; color: var(--ink-2); font-weight: 500; min-width: 0; }
-.venue span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.icon { width: 1em; height: 1em; flex: none; fill: var(--accent); }
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45em;
-  padding: 0.3em 0.8em;
-  border-radius: 999px;
-  font-family: var(--display);
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-}
-.chip-today, .chip-tomorrow { background: var(--today); border-color: var(--today); color: #1a1400; }
-.chip-live { background: var(--live); border-color: var(--live); }
-.live-dot { width: 0.6em; height: 0.6em; border-radius: 50%; background: #fff; animation: pulse 1.6s ease-in-out infinite; }
+.live-dot { width: 0.6em; height: 0.6em; border-radius: 50%; background: currentColor; animation: pulse 1.6s ease-in-out infinite; }
 @keyframes pulse { 50% { opacity: 0.25; } }
-.live-now { color: var(--live); }
 
 /* ---------- Next game ---------- */
-.hero { padding: 1.7rem 1.8rem 1.6rem; display: grid; gap: 0.9rem; }
+.hero { padding: 2.1rem 1.9rem 1.9rem; display: grid; gap: 1.1rem; }
 .hero::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
-  height: 0.4rem;
+  height: 0.45rem;
   background: var(--accent);
 }
 .watermark {
@@ -157,68 +136,65 @@ body {
 .hero.is-today, .hero.is-tomorrow { box-shadow: 0 0 0 0.3rem var(--today), 0 0.6rem 1.6rem rgba(0, 0, 0, 0.45); }
 .hero.is-live { box-shadow: 0 0 0 0.3rem var(--live), 0 0.6rem 1.6rem rgba(0, 0, 0, 0.45); }
 
-.hero-top { display: flex; justify-content: space-between; align-items: center; font-size: 1.15rem; }
-.eyebrow { font-family: var(--display); font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+.hero-team { display: flex; align-items: center; gap: 1.4rem; }
+.hero-team-name { font-family: var(--display); font-size: 2.8rem; font-weight: 700; line-height: 1; text-transform: uppercase; letter-spacing: 0.01em; }
 
-.hero-team { display: flex; align-items: center; gap: 1.3rem; }
-.hero-team-name { font-family: var(--display); font-size: 2.45rem; font-weight: 700; line-height: 1; text-transform: uppercase; letter-spacing: 0.01em; }
-.hero-meta { font-size: 1.15rem; color: var(--ink-2); font-weight: 600; margin-top: 0.35rem; }
-
-.hero-opponent { font-family: var(--display); font-size: 2.7rem; font-weight: 700; line-height: 1.05; }
+.hero-opponent { font-family: var(--display); font-size: 3.3rem; font-weight: 700; line-height: 1.05; }
 
 .hero-when {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1rem 1.3rem;
+  padding: 1.2rem 1.4rem;
   border-radius: 0.9rem;
   background: rgba(0, 0, 0, 0.32);
   border: 1px solid var(--hairline);
 }
-.hero-weekday { font-family: var(--display); font-size: 2.1rem; font-weight: 700; line-height: 1; }
-.hero.is-today .hero-weekday, .hero.is-tomorrow .hero-weekday { color: var(--today); }
-.hero-daymonth { font-size: 1.3rem; color: var(--ink-2); font-weight: 600; margin-top: 0.3rem; }
+.hero-day { font-family: var(--display); font-size: 2.4rem; font-weight: 700; line-height: 1; }
+.hero.is-today .hero-day, .hero.is-tomorrow .hero-day { color: var(--today); }
+.hero-date { font-size: 1.5rem; color: var(--ink-2); font-weight: 600; margin-top: 0.35rem; }
 .hero-time {
   font-family: var(--display);
-  font-size: 5rem;
+  font-size: 5.6rem;
   font-weight: 700;
   line-height: 0.9;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.hero-time.tbc { font-size: 3rem; color: var(--ink-3); }
-.hero-note { font-size: 1.05rem; color: var(--ink-3); margin-top: -0.4rem; }
-.hero-venue { font-size: 1.35rem; }
+.hero-time.tbc { font-size: 2.4rem; color: var(--ink-2); }
 
-/* ---------- Coming up ---------- */
-.section-title {
+/* Live score */
+.hero-when.is-live { flex-direction: column; align-items: stretch; gap: 0.6rem; }
+.on-now {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.5em;
   font-family: var(--display);
-  font-size: 1.05rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-  margin-top: 0.3rem;
+  letter-spacing: 0.12em;
+  color: var(--live);
 }
-.section-title::after { content: ""; flex: 1; height: 1px; background: var(--hairline); }
-.section-title[hidden] { display: none; }
+.clock-detail { margin-left: auto; color: var(--ink); letter-spacing: 0.02em; }
+.scoreboard { display: grid; grid-template-columns: 1fr auto 1fr; align-items: start; gap: 1rem; text-align: center; }
+.score { font-family: var(--display); font-size: 7rem; font-weight: 700; line-height: 0.95; font-variant-numeric: tabular-nums; }
+.dash { font-family: var(--display); font-size: 5rem; font-weight: 700; color: var(--ink-3); line-height: 1.1; }
+.side-name { font-family: var(--display); font-size: 1.5rem; font-weight: 700; color: var(--ink-2); margin-top: 0.3rem; }
 
+/* ---------- Coming up ---------- */
 /* The padding leaves room for highlight rings, which overflow would otherwise clip. */
-.list { list-style: none; flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 0.7rem; padding: 0.4rem; margin: -0.4rem; }
+.list { list-style: none; flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 0.8rem; padding: 0.4rem; margin: -0.4rem; }
 
 .row {
   flex: 1 0 auto;
   max-height: 8.5rem;
   display: grid;
-  grid-template-columns: 5.2rem auto 1fr auto;
+  grid-template-columns: 5.4rem auto 1fr auto;
   align-items: center;
-  gap: 1.1rem;
-  padding: 0.85rem 1.3rem 0.85rem 0.85rem;
+  gap: 1.2rem;
+  padding: 0.9rem 1.4rem 0.9rem 0.9rem;
 }
 .row::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 0.35rem; background: var(--accent); }
 .row.is-today, .row.is-tomorrow { box-shadow: 0 0 0 0.25rem var(--today), 0 0.6rem 1.6rem rgba(0, 0, 0, 0.45); }
@@ -236,43 +212,31 @@ body {
   font-family: var(--display);
   line-height: 1;
   padding: 0.45rem 0;
-  min-height: 5.2rem;
+  min-height: 5.4rem;
 }
-.tile-dow { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; color: #b3261e; }
-.tile-day { font-size: 2.3rem; font-weight: 700; margin: 0.08rem 0; }
-.tile-month { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; color: #555; }
+.tile-dow { font-size: 0.95rem; font-weight: 700; letter-spacing: 0.08em; color: #b3261e; }
+.tile-day { font-size: 2.5rem; font-weight: 700; margin: 0.08rem 0; }
+.tile-month { font-size: 0.95rem; font-weight: 700; letter-spacing: 0.08em; color: #555; }
 .date-tile.flag-today, .date-tile.flag-tomorrow { background: var(--today); }
 .date-tile.flag-live { background: var(--live); color: #fff; }
-.tile-flag { font-size: 1.1rem; font-weight: 800; letter-spacing: 0.06em; }
+.tile-flag { font-size: 1.05rem; font-weight: 800; letter-spacing: 0.04em; text-align: center; }
 
-.row-main { min-width: 0; display: grid; gap: 0.2rem; }
+.row-main { min-width: 0; display: grid; gap: 0.25rem; }
 .row-team {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
   font-family: var(--display);
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-2);
   white-space: nowrap;
-  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.row-tag {
-  flex: none;
-  padding: 0.1em 0.5em;
-  border-radius: 0.35em;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  font-size: 0.8em;
-  letter-spacing: 0.1em;
-  color: var(--ink);
-}
-.row-opponent { font-family: var(--display); font-size: 1.85rem; font-weight: 700; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.row-venue { font-size: 1rem; }
+.row-opponent { font-family: var(--display); font-size: 2.1rem; font-weight: 700; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .row-time {
   font-family: var(--display);
-  font-size: 2.6rem;
+  font-size: 2.8rem;
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.01em;
@@ -280,16 +244,17 @@ body {
   white-space: nowrap;
   text-align: right;
 }
-.row-time.tbc { font-size: 1.6rem; color: var(--ink-3); }
+.row-time.tbc { font-size: 1.5rem; color: var(--ink-2); }
+.row-time.live-score { color: var(--live); }
 
 /* ---------- Teams not in the list ---------- */
 .later { display: grid; gap: 0.6rem; }
 .later:empty { display: none; }
-.later-line { display: flex; align-items: center; gap: 0.9rem; padding: 0.65rem 1.1rem 0.65rem 0.8rem; font-size: 1.1rem; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08); }
-.later-line p { display: flex; flex-wrap: wrap; gap: 0.15rem 0.7rem; align-items: baseline; }
+.later-line { display: flex; align-items: center; gap: 0.9rem; padding: 0.7rem 1.1rem 0.7rem 0.8rem; font-size: 1.2rem; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08); }
+.later-line p { display: flex; flex-wrap: wrap; gap: 0.15rem 0.8rem; align-items: baseline; }
 .later-line strong { font-family: var(--display); text-transform: uppercase; letter-spacing: 0.08em; }
 .later-line span { color: var(--ink-2); }
 
-/* ---------- Footer ---------- */
-.foot { color: var(--ink-3); font-size: 0.78rem; display: grid; gap: 0.15rem; padding: 0 0.3rem; }
-.foot .warn { color: var(--today); font-weight: 700; }
+/* ---------- Problems only ---------- */
+.foot { color: var(--today); font-size: 1rem; font-weight: 700; padding: 0 0.3rem; }
+.foot[hidden] { display: none; }

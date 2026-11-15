@@ -9,12 +9,26 @@ export const TEAM_ORDER = ['Juventus', 'Italy', 'Collingwood', 'Melbourne Victor
 const start = fixture => Date.parse(fixture.startTimeUtc);
 const end = fixture => start(fixture) + (fixture.competition === 'AFL' ? AFL_LENGTH_MS : SOCCER_LENGTH_MS);
 
-export const isLive = (fixture, now = Date.now()) => start(fixture) <= now && now < end(fixture);
+// `live` holds ESPN's state for games around kickoff, keyed by fixture id ('pre', 'in', or 'post').
+// When ESPN knows, it wins over the usual game length, so extra time or a long AFL game stays on.
+
+export function isLive(fixture, now = Date.now(), live = {}) {
+  const state = live[fixture.id]?.state;
+  if (state) return state === 'in';
+  return start(fixture) <= now && now < end(fixture);
+}
+
+function notFinished(fixture, now, live) {
+  const state = live[fixture.id]?.state;
+  if (state === 'in') return true;
+  if (state === 'post') return false;
+  return end(fixture) > now;
+}
 
 /** Games for every team that have not finished yet, soonest first (live games included). */
-export function upcomingGames(fixtures, now = Date.now()) {
+export function upcomingGames(fixtures, now = Date.now(), live = {}) {
   return fixtures
-    .filter(fixture => fixture.startTimeUtc && TEAM_ORDER.includes(fixture.team) && end(fixture) > now)
+    .filter(fixture => fixture.startTimeUtc && TEAM_ORDER.includes(fixture.team) && notFinished(fixture, now, live))
     .sort((a, b) => start(a) - start(b) || TEAM_ORDER.indexOf(a.team) - TEAM_ORDER.indexOf(b.team));
 }
 

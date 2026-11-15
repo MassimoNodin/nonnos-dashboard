@@ -37,3 +37,14 @@ test('counts calendar days in the viewer time zone', () => {
   assert.equal(daysBetween(now, new Date('2026-11-14T12:30:00Z'), 'Australia/Melbourne'), 0);
   assert.equal(daysBetween(now, new Date('2026-11-14T13:30:00Z'), 'UTC'), 0);
 });
+
+test('ESPN live state overrides the usual game length', () => {
+  const fixture = { ...game('Juventus', 'Serie A', '2026-11-14T18:00:00.000Z'), id: 'g1' };
+  const afterUsualEnd = Date.parse('2026-11-14T20:30:00Z');
+  assert.equal(upcomingGames([fixture], afterUsualEnd).length, 0);
+  assert.equal(upcomingGames([fixture], afterUsualEnd, { g1: { state: 'in' } }).length, 1, 'extra time keeps it on');
+  assert.equal(isLive(fixture, afterUsualEnd, { g1: { state: 'in' } }), true);
+  const duringGame = Date.parse('2026-11-14T19:00:00Z');
+  assert.equal(upcomingGames([fixture], duringGame, { g1: { state: 'post' } }).length, 0, 'finished early per ESPN');
+  assert.equal(isLive(fixture, duringGame, { g1: { state: 'pre' } }), false, 'kickoff delayed');
+});
