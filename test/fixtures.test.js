@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { collectFixtures, markPlaceholderTimes, mergeWithPrevious, normalizeFixture, refreshFixtures, teams } from '../src/fixtures.js';
+import { collectFixtures, competitionName, markPlaceholderTimes, mergeWithPrevious, normalizeEspnEvent, normalizeFixture, refreshFixtures, teams } from '../src/fixtures.js';
 
 const fixtureAt = (dateUtc, extra = {}) => ({ MatchNumber: dateUtc, DateUtc: dateUtc, HomeTeam: 'Juventus', AwayTeam: 'Other', ...extra });
 
@@ -31,6 +31,7 @@ test('does not mark short runs or played games as TBC', () => {
 
 test('collects three seasons and reports unavailable and failing feeds', async () => {
   const result = await collectFixtures({ now: new Date('2026-10-30T00:00:00Z'), fetchImpl: async url => {
+    if (url.includes('espn.com')) return { ok: true, json: async () => ({ events: [] }) };
     if (url.includes('2025')) return { status: 404, ok: false };
     if (url.includes('2027')) return { status: 503, ok: false };
     return { ok: true, json: async () => [{ MatchNumber: 1, DateUtc: null, HomeTeam: 'Home', AwayTeam: 'Away' }] };
@@ -43,19 +44,52 @@ test('collects three seasons and reports unavailable and failing feeds', async (
 });
 
 test('keeps previously saved fixtures for feeds that failed', () => {
-  const previous = { fixtures: [{ id: 'a', team: 'Juventus', season: 2026, startTimeUtc: '2026-12-01T00:00:00.000Z' }, { id: 'b', team: 'Collingwood', season: 2026, startTimeUtc: '2026-05-01T00:00:00.000Z' }] };
-  const fresh = { fixtures: [{ id: 'c', team: 'Collingwood', season: 2026, startTimeUtc: '2026-06-01T00:00:00.000Z' }], errors: [{ team: 'Juventus', season: 2026 }] };
-  assert.deepEqual(mergeWithPrevious(fresh, previous).fixtures.map(fixture => fixture.id), ['c', 'a']);
+  const previous = { fixtures: [
+    { id: 'a', feed: 'serie-a-2026', startTimeUtc: '2026-12-01T00:00:00.000Z' },
+    { id: 'b', feed: 'afl-2026', startTimeUtc: '2026-05-01T00:00:00.000Z' },
+    { id: 'espn-1', feed: 'espn-162', startTimeUtc: '2026-11-15T19:45:00.000Z' },
+    { id: 'serie-a-2026-7', startTimeUtc: '2026-12-02T00:00:00.000Z' }, // saved before fixtures had a feed field
+  ] };
+  const fresh = { fixtures: [{ id: 'c', feed: 'afl-2026', startTimeUtc: '2026-06-01T00:00:00.000Z' }], errors: [{ feed: 'serie-a-2026' }, { feed: 'espn-162' }] };
+  assert.deepEqual(mergeWithPrevious(fresh, previous).fixtures.map(fixture => fixture.id), ['c', 'espn-1', 'a', 'serie-a-2026-7']);
+});
+
+test('normalizes ESPN national team games, including unconfirmed times and results', () => {
+  const event = (id, date, extra = {}) => ({
+    id, date, league: { name: 'UEFA Nations League' },
+    competitions: [{
+      timeValid: true, venue: { fullName: 'King Baudouin Stadium' }, status: { type: { completed: false } },
+      competitors: [{ homeAway: 'home', team: { displayName: 'Belgium' } }, { homeAway: 'away', team: { displayName: 'Italy' } }],
+      ...extra,
+    }],
+  });
+  const upcoming = normalizeEspnEvent(event('1', '2026-11-15T19:45Z'), { name: 'Italy', espnId: 162 });
+  assert.equal(upcoming.startTimeUtc, '2026-11-15T19:45:00.000Z');
+  assert.equal(upcoming.awayTeam, 'Italy');
+  assert.equal(upcoming.timeStatus, 'listed');
+  assert.equal(upcoming.homeScore, null);
+  assert.equal(normalizeEspnEvent(event('2', '2027-03-26T00:00Z', { timeValid: false }), { name: 'Italy', espnId: 162 }).timeStatus, 'tbc');
+  const played = normalizeEspnEvent(event('3', '2026-11-12T19:45Z', {
+    status: { type: { completed: true } },
+    competitors: [{ homeAway: 'home', team: { displayName: 'Italy' }, score: { value: 3 } }, { homeAway: 'away', team: { displayName: 'France' }, score: { value: 0 } }],
+  }), { name: 'Italy', espnId: 162 });
+  assert.deepEqual([played.homeScore, played.awayScore], [3, 0]);
+});
+
+test('shortens ESPN competition names', () => {
+  assert.equal(competitionName("Men's International Friendly"), 'Friendly');
+  assert.equal(competitionName('WCQ - UEFA'), 'World Cup qualifier');
+  assert.equal(competitionName('UEFA Nations League'), 'UEFA Nations League');
 });
 
 test('a refresh while offline does not wipe the saved file', async () => {
   const file = join(await mkdtemp(join(tmpdir(), 'nonno-')), 'fixtures.json');
-  const saved = { fetchedAt: '2026-11-01T00:00:00.000Z', fixtures: [{ id: 'x', team: 'Juventus', season: 2026, startTimeUtc: '2026-12-01T00:00:00.000Z' }], unavailable: [], errors: [] };
+  const saved = { fetchedAt: '2026-11-01T00:00:00.000Z', fixtures: [{ id: 'serie-a-2026-1', team: 'Juventus', season: 2026, startTimeUtc: '2026-12-01T00:00:00.000Z' }], unavailable: [], errors: [] };
   await writeFile(file, JSON.stringify(saved));
   await refreshFixtures({ file, now: new Date('2026-11-14T00:00:00Z'), fetchImpl: async () => { throw new Error('offline'); } });
   const written = JSON.parse(await readFile(file, 'utf8'));
-  assert.deepEqual(written.fixtures.map(fixture => fixture.id), ['x']);
-  assert.equal(written.errors.length, 9);
+  assert.deepEqual(written.fixtures.map(fixture => fixture.id), ['serie-a-2026-1']);
+  assert.equal(written.errors.length, 10);
 });
 
 test('downloads missing logos, keeps existing ones, and rejects non-SVG responses', async () => {
@@ -67,8 +101,9 @@ test('downloads missing logos, keeps existing ones, and rejects non-SVG response
     requested.push(url);
     return { ok: true, text: async () => (url === LOGO_SOURCES.collingwood ? '<svg>pies</svg>' : '<html>error page</html>') };
   } });
-  assert.equal(requested.length, 2);
+  assert.equal(requested.length, Object.keys(LOGO_SOURCES).length - 1);
   assert.equal(await readFile(join(dir, 'juventus.svg'), 'utf8'), '<svg>kept</svg>');
   assert.equal(await readFile(join(dir, 'collingwood.svg'), 'utf8'), '<svg>pies</svg>');
-  assert.deepEqual(failed, [{ slug: 'melbourne-victory', message: 'Not an SVG file' }]);
+  assert.deepEqual(failed.map(item => item.slug), ['italy', 'melbourne-victory']);
+  assert.ok(failed.every(item => item.message === 'Not an SVG file'));
 });

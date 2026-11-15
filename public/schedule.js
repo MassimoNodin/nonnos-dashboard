@@ -1,15 +1,13 @@
 // Pure helpers shared by the browser and the tests.
 
-const GAME_LENGTH_MS = {
-  'Serie A': 2.25 * 60 * 60 * 1000,
-  'A-League Men': 2.25 * 60 * 60 * 1000,
-  AFL: 3 * 60 * 60 * 1000,
-};
+// How long after kickoff a game counts as "on now": football 2h15m, AFL 3h.
+const SOCCER_LENGTH_MS = 2.25 * 60 * 60 * 1000;
+const AFL_LENGTH_MS = 3 * 60 * 60 * 1000;
 
-export const TEAM_ORDER = ['Juventus', 'Collingwood', 'Melbourne Victory'];
+export const TEAM_ORDER = ['Juventus', 'Italy', 'Collingwood', 'Melbourne Victory'];
 
 const start = fixture => Date.parse(fixture.startTimeUtc);
-const end = fixture => start(fixture) + (GAME_LENGTH_MS[fixture.competition] ?? GAME_LENGTH_MS.AFL);
+const end = fixture => start(fixture) + (fixture.competition === 'AFL' ? AFL_LENGTH_MS : SOCCER_LENGTH_MS);
 
 export const isLive = (fixture, now = Date.now()) => start(fixture) <= now && now < end(fixture);
 

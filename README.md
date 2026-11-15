@@ -1,10 +1,10 @@
 # Nonno's dashboard
 
-A large-print dashboard, built for a TV turned on its side (portrait, 1080 x 1920), showing the upcoming games for Juventus (Serie A), Collingwood (AFL), and Melbourne Victory (A-League Men).
+A large-print dashboard, built for a TV turned on its side (portrait, 1080 x 1920), showing the upcoming games for Juventus (Serie A), the Italy men's national team (all competitions), Collingwood (AFL), and Melbourne Victory (A-League Men).
 
 The soonest game fills a big panel at the top. Below it, the following games for all three teams are listed in kickoff order, as many as fit on the screen, each with a calendar-style date tile. Each game shows the team's crest on its own team-coloured panel and says whether it is a home or away game, who the opponent is, and the stadium. Games today or tomorrow get a yellow outline, and games in progress a red one marked LIVE. A team with no game in the list (for example, Collingwood in the AFL off-season) gets one line at the bottom with its next game.
 
-Fixtures come from the free [Fixture Download](https://fixturedownload.com) JSON feeds. No account, API key, or other credentials are required.
+Club fixtures come from the free [Fixture Download](https://fixturedownload.com) JSON feeds. Italy's games come from ESPN's public team schedule (`site.api.espn.com`), which covers qualifiers, the Nations League, friendlies, and tournaments in one feed. That ESPN endpoint is free and needs no key, but it is unofficial and undocumented, so it could change without notice. If it breaks, the dashboard keeps showing the last saved Italy games and says some teams could not be updated. No account, API key, or other credentials are required.
 
 ## Run
 
@@ -30,9 +30,10 @@ The club crests are trademarks, so they are not stored in this repository. The s
 
 ## Data notes
 
-- Fixtures are saved to `data/fixtures.json` (ignored by Git). It holds the previous, current, and following calendar-year season feeds. An unavailable season has usually just not been published yet.
-- If a feed fails during a refresh (for example, no internet), the previously saved fixtures for that team and season are kept, and the dashboard says that some teams could not be updated.
+- Fixtures are saved to `data/fixtures.json` (ignored by Git). For the clubs it holds the previous, current, and following calendar-year season feeds; an unavailable season has usually just not been published yet. For Italy it holds ESPN's recent results and every scheduled game. National teams often have nothing scheduled for months between international windows, and the dashboard says "No games scheduled yet" then.
+- If a feed fails during a refresh (for example, no internet), the previously saved fixtures from that feed are kept, and the dashboard says that some teams could not be updated.
 - Times are stored in UTC and shown in the viewing device's time zone.
+- ESPN marks kickoff times that are not confirmed yet; these also get `timeStatus: "tbc"`.
 - Fixture Download fills in placeholder kickoff times for games that have not been scheduled yet. A fixture gets `timeStatus: "tbc"` when its time is missing, is exactly midnight UTC, or is part of a run of 4 or more unplayed games at the end of a season that all share one kickoff time. The dashboard shows these as "Time not announced yet". This is a best guess, so check official club or league sources for games far in the future.
 
 ## Test

@@ -8,6 +8,7 @@ const MAX_LIST = 8; // most games listed under the big panel; fewer if they do n
 
 const TEAMS = {
   Juventus: { slug: 'juventus', initials: 'JUV' },
+  Italy: { slug: 'italy', initials: 'ITA' },
   Collingwood: { slug: 'collingwood', initials: 'COL' },
   'Melbourne Victory': { slug: 'melbourne-victory', initials: 'MV' },
 };
@@ -145,7 +146,7 @@ function row(game, now) {
 function laterLine(team, game, now) {
   const text = game
     ? `${when(game, now).days > 30 ? 'Season break · back' : 'Next game'} ${when(game, now).shortDate}, ${versus(game).word} ${versus(game).opponent}`
-    : 'No games listed yet';
+    : 'No games scheduled yet';
   return el('div', { className: `later-line ${theme(team)}` },
     crest(team, 'sm'),
     el('p', {}, el('strong', {}, team), el('span', {}, text)));

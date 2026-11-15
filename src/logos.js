@@ -8,6 +8,7 @@ export const LOGO_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'dat
 
 export const LOGO_SOURCES = {
   juventus: 'https://upload.wikimedia.org/wikipedia/commons/e/ed/Juventus_FC_-_logo_black_%28Italy%2C_2020%29.svg',
+  italy: 'https://upload.wikimedia.org/wikipedia/commons/b/bf/Logo_Italy_National_Football_Team_-_2023.svg',
   collingwood: 'https://upload.wikimedia.org/wikipedia/en/a/a6/Collingwood_Football_Club_Logo_%282017%E2%80%93present%29.svg',
   'melbourne-victory': 'https://upload.wikimedia.org/wikipedia/en/9/95/Melbourne_Victory.svg',
 };
