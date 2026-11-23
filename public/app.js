@@ -1,3 +1,4 @@
+import { channelsFor } from './channels.js';
 import { TEAM_ORDER, daysBetween, isLive, opponentOf, upcomingGames } from './schedule.js';
 
 const LOCALE = 'en-AU';
@@ -74,6 +75,14 @@ function when(game, now) {
 
 const opponent = game => opponentOf(game).opponent;
 
+/** Where to watch: one coloured badge for each channel or streaming service, if known. */
+function channelBadges(game, size) {
+  const brands = channelsFor(game, size === 'lg' ? 3 : 2);
+  if (!brands.length) return null;
+  const badges = brands.map(brand => el('span', { className: 'channel', style: `background:${brand.bg};color:${brand.fg}` }, brand.label));
+  return el('div', { className: `channels channels-${size}` }, size === 'lg' ? el('p', { className: 'watch-on' }, 'Watch on') : null, el('div', { className: 'channel-list' }, badges));
+}
+
 function bigTime(time, className) {
   if (!time) return el('p', { className: `${className} tbc` }, 'Time TBC');
   return el('p', { className }, time.main, el('span', { className: 'period' }, time.period));
@@ -108,7 +117,8 @@ function hero(game, now) {
       ? heroScore(game)
       : el('div', { className: 'hero-when' },
         el('div', {}, el('p', { className: 'hero-day' }, w.day), el('p', { className: 'hero-date' }, w.date)),
-        bigTime(w.time, 'hero-time')));
+        bigTime(w.time, 'hero-time')),
+    channelBadges(game, 'lg'));
 }
 
 function dateTile(w) {
@@ -127,7 +137,8 @@ function row(game, now) {
     crest(game.team, 'md'),
     el('div', { className: 'row-main' },
       el('p', { className: 'row-team' }, game.team),
-      el('p', { className: 'row-opponent' }, el('span', { className: 'vs' }, 'vs'), ` ${opponent(game)}`)),
+      el('p', { className: 'row-opponent' }, el('span', { className: 'vs' }, 'vs'), ` ${opponent(game)}`),
+      channelBadges(game, 'sm')),
     w.on
       ? el('p', { className: 'row-time live-score' }, score ? `${score.ours} – ${score.theirs}` : 'On now')
       : bigTime(w.time, 'row-time'));

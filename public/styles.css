@@ -247,6 +247,28 @@ body {
 .row-time.tbc { font-size: 1.5rem; color: var(--ink-2); }
 .row-time.live-score { color: var(--live); }
 
+/* ---------- Where to watch ---------- */
+/* Each badge takes its brand colours inline; the white ring keeps it clear on dark cards. */
+.channels { display: flex; align-items: center; gap: 0.9rem; min-width: 0; }
+.channel-list { display: flex; flex-wrap: wrap; gap: 0.5rem 0.7rem; min-width: 0; }
+.watch-on { font-family: var(--display); font-size: 1.3rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2); flex: none; }
+.channel {
+  display: inline-block;
+  padding: 0.35em 0.85em;
+  border-radius: 0.55em;
+  box-shadow: 0 0 0 0.12rem rgba(255, 255, 255, 0.85);
+  font-family: var(--display);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
+}
+.channels-lg { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
+.channels-lg .channel { font-size: 1.5rem; }
+.channels-sm { margin-top: 0.3rem; }
+.channels-sm .channel-list { flex-wrap: nowrap; gap: 0.5rem; }
+.channels-sm .channel { font-size: 1rem; padding: 0.3em 0.6em; }
+
 /* ---------- Teams not in the list ---------- */
 .later { display: grid; gap: 0.6rem; }
 .later:empty { display: none; }
